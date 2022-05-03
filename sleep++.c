@@ -17,10 +17,7 @@ void printProgress (int length, int fill) {
     for (int i = 0; i < fill; ++i){
         printf("█");
     }
-    if (length - fill > 0)
-        printf("%*c]", length - fill,  ' ');
-    else 
-        printf("]");
+    printf("%*c", length - fill,  ']');
 
 }
 
