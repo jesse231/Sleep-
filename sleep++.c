@@ -2,27 +2,32 @@
 #include <time.h>
 #include <unistd.h>
 
-struct inp {
-    int number;
+int input() {
+    int time;
     char letter;
-};
-struct inp input() {
-    struct inp length;
     char inp[11];
-    int test1;
-    char test2;
     // fgets the size of the largest integer + a trailing character for unit size
-    if (fgets(inp,11,stdin) != NULL) {
+    if (fgets(inp, 11, stdin) != NULL) {
         //Reparse input into variables
-        int ct = sscanf(inp, "%i %c", &length.number, &length.letter);
+        int ct = sscanf(inp, "%i %c", &time, &letter);
         //Check the number of succesful input assignments and process based on number of inputs
         if (ct == 0) {
             printf("Please enter an integer\n");
         } else if (ct == 1) {
-            length.letter = 0;
+            return time;
         }
     }
-    return length;
+
+    //Scale time based on the unit ('m': minutes, 'h' hours) 
+    if (letter == 'm'){
+        return time * 60;
+    } else if (letter == 'h') {
+        return time * 3600;
+    }
+
+    //Otherwise print message and return failure
+    printf("Please enter a valid unit (m or h)");
+    return -1;
 }
 
 void printProgress (int length, int fill) {
@@ -35,19 +40,10 @@ void printProgress (int length, int fill) {
 }
 
 int main() {
-    struct inp ln = input();
-    int sleepTime;
-    switch (ln.letter){
-        case 'm':
-            sleepTime = ln.number * 60;
-            break;
-        case 'h':
-            sleepTime = ln.number * 3600;
-            break;
-        default:
-            sleepTime = ln.number;
-            break;
-    }
+    int sleepTime = input();
+    if (sleepTime == -1)
+        return -1;
+        
     time_t start = time(0);
     int segments = 50;
     double interval = ((double )sleepTime / segments) * 10e5;
@@ -55,11 +51,11 @@ int main() {
     
     int count = 0;
     printf("\e[?25l");
+
     while (elapsed < sleepTime){
-        // if (count != )
-        // printProgress(segments , count);
-        // fflush(stdout);
-        printf("%c\n", ln.letter);
+    
+        printProgress(segments , count);
+        fflush(stdout);
         usleep(interval);
         count++;
     
