@@ -12,6 +12,18 @@ int input() {
     return number;
 }
 
+void printProgress (int length, int fill) {
+    printf("\r[");
+    for (int i = 0; i < fill; ++i){
+        printf("█");
+    }
+    if (length - fill > 0)
+        printf("%*c]", length - fill,  ' ');
+    else 
+        printf("]");
+
+}
+
 int main() {
     int sleepTime = input();
 
@@ -23,23 +35,16 @@ int main() {
     int count = 0;
     printf("\e[?25l");
     while (elapsed < sleepTime){
-        printf("\r[");
-        for (int i = 0; i < count; ++i){
-            printf("█");
-        }
-        printf("%*c]", segments-count,  ' ');
+        printProgress(segments , count);
+
         fflush(stdout);
         usleep(interval);
         count++;
     
         elapsed = difftime(time(0), start);
     }
-    printf("\r[");
-    for (int i = 0; i < segments; ++i){
-        printf("█");
-    }
-    printf("]\n");
-    
+
+    printProgress(segments,segments);
 
     printf("\e[?25l");
     return 0;
